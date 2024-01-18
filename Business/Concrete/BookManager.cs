@@ -5,6 +5,7 @@ using CorePackages.Aspects.Autofac.Validation;
 using CorePackages.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using Entities.DTOs.RequestDto;
 using Entities.DTOs.ResponseDto;
 
@@ -35,9 +36,13 @@ public class BookManager : IBookService
         return new SuccessResult(Messages.BookDeleted);
     }
 
-    public IDataResult<List<Book>> GetAll()
+    public IDataResult<List<BookResponseDto>> GetAll()
     {
-        return new SuccessDataResult<List<Book>>(_bookDal.GetAll(),Messages.AllBooksListed); 
+        var books = _bookDal.GetAll();
+        var bookResponseDto = books.Select(book => new BookResponseDto(
+            book.BookId, book.BookName, book.Description,book.Price,book.AuthorId,book.CategoryId,book.PublisherId )).ToList();
+            
+        return new SuccessDataResult<List<BookResponseDto>>(bookResponseDto,Messages.AllBooksListed); 
     }
 
     public IDataResult<BookResponseDto> GetById(int bookId)
@@ -48,6 +53,11 @@ public class BookManager : IBookService
     public IDataResult<List<Book>> GetByPrice(double min, double max)
     {
         return new SuccessDataResult<List<Book>>(_bookDal.GetAll(b => b.Price >= min && b.Price <= max));
+    }
+
+    public IDataResult<List<BookDetailDto>> GetDetail()
+    {
+        return new SuccessDataResult<List<BookDetailDto>>(_bookDal.GetBookDetails());
     }
 
     [ValidationAspect(typeof(BookValidator))]

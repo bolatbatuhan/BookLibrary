@@ -8,7 +8,7 @@ namespace Business.Abstract;
 public interface IAuthorService
 {
 
-    IDataResult<List<Author>> GetAll();
+    IDataResult<List<AuthorResponseDto>> GetAll();
     IDataResult<AuthorResponseDto> GetById(int authorId);
     IResult Add(AuthorAddRequest authorAddRequest);
     IResult Delete(int authorId);

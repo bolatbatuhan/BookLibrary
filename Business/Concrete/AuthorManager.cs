@@ -33,9 +33,12 @@ public class AuthorManager : IAuthorService
         return new SuccessResult(Messages.AuthorDeleted);
     }
 
-    public IDataResult<List<Author>> GetAll()
+    public IDataResult<List<AuthorResponseDto>> GetAll()
     {
-        return new SuccessDataResult<List<Author>>(_authorDal.GetAll(),Messages.AllAuthorsListed);
+       var authors = _authorDal.GetAll();
+       var authorResponseDtos = authors.Select(author => new AuthorResponseDto(author.AuthorId, author.AuthorName)).ToList();
+        
+        return new SuccessDataResult<List<AuthorResponseDto>>(authorResponseDtos,Messages.AllAuthorsListed);
     }
 
     public IDataResult<AuthorResponseDto> GetById(int authorId)

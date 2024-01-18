@@ -48,6 +48,16 @@ public class BooksController : ControllerBase
         }
         return BadRequest(result.Message);
     }
+    [HttpGet("getdetails")]
+    public IActionResult GetDetails()
+    {
+        var result = _bookService.GetDetail();
+        if (result.Success)
+        {
+            return Ok(result.Data);
+        }
+        return BadRequest(result.Message);
+    }
 
     [HttpPost("add")]
     public IActionResult Add(BookAddRequest bookAddRequest)
