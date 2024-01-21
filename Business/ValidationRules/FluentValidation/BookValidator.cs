@@ -11,5 +11,8 @@ public class BookValidator : AbstractValidator<Book>
         RuleFor(b => b.BookName).MinimumLength(2);
         RuleFor(b => b.Price).GreaterThan(0);
         RuleFor(b=>b.Description).NotEmpty();
+        RuleFor(b=>b.AuthorId).NotEmpty();
+        RuleFor(b=>b.PublisherId).NotEmpty();
+        RuleFor(b=>b.CategoryId).NotEmpty();
     }
 }

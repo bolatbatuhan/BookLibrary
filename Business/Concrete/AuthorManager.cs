@@ -2,6 +2,7 @@
 using Business.Constans;
 using Business.ValidationRules.FluentValidation;
 using CorePackages.Aspects.Autofac.Validation;
+using CorePackages.Utilities.Business;
 using CorePackages.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -22,6 +23,11 @@ public class AuthorManager : IAuthorService
     [ValidationAspect(typeof(AuthorValidator))]
     public IResult Add(AuthorAddRequest authorAddRequest)
     {
+        IResult result = BusinessRules.Run(CheckIfAuthorNameExits(authorAddRequest.AuthorName));
+        if(result != null)
+        {
+            return result;
+        }
         _authorDal.Add(authorAddRequest);
         return new SuccessResult(Messages.AuthorAdded);
     }
@@ -51,5 +57,14 @@ public class AuthorManager : IAuthorService
     {
         _authorDal.Update(authorUpdateRequest);
         return new SuccessResult(Messages.AuthorUpdated);
+    }
+    private IResult CheckIfAuthorNameExits(string authorName)
+    {
+        var result = _authorDal.GetAll(a => a.AuthorName == authorName).Any();
+        if (result)
+        {
+            return new ErrorResult(Messages.AuthorNameAlreadyExits);
+        }
+        return new SuccessResult();
     }
 }

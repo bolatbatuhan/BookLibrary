@@ -2,6 +2,7 @@
 using Business.Constans;
 using Business.ValidationRules.FluentValidation;
 using CorePackages.Aspects.Autofac.Validation;
+using CorePackages.Utilities.Business;
 using CorePackages.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -22,6 +23,12 @@ public class PublisherManager : IPublisherService
     [ValidationAspect(typeof(PublisherValidator))]
     public IResult Add(PublisherAddRequest publisherAddRequest)
     {
+        IResult result = BusinessRules.Run(CheckIfPublisherNameExits(publisherAddRequest.PublisherName));
+        if(result != null)
+        {
+            return result;
+        }
+
         _publisherDal.Add(publisherAddRequest);
         return new SuccessResult(Messages.PublisherAdded);
     }
@@ -48,5 +55,14 @@ public class PublisherManager : IPublisherService
     {
         _publisherDal.Update(publisherUpdateRequest);
         return new SuccessResult(Messages.PublisherUpdated);
+    }
+    private IResult CheckIfPublisherNameExits(string publisherName)
+    {
+        var result = _publisherDal.GetAll(p => p.PublisherName == publisherName).Any();
+        if(result)
+        {
+            return new ErrorResult(Messages.PublisherNameIsAlreadyExits);
+        }
+        return new SuccessResult();
     }
 }

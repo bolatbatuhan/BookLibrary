@@ -2,6 +2,7 @@
 using Business.Constans;
 using Business.ValidationRules.FluentValidation;
 using CorePackages.Aspects.Autofac.Validation;
+using CorePackages.Utilities.Business;
 using CorePackages.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -25,6 +26,13 @@ public class BookManager : IBookService
     [ValidationAspect(typeof(BookValidator))]
     public IResult Add(BookAddRequest bookAddRequest)
     {
+        IResult result = BusinessRules.Run(CheckIfBookNameExits(bookAddRequest.BookName));
+
+        if (result != null)
+        {
+            return result;
+        }
+
         _bookDal.Add(bookAddRequest);
         return new SuccessResult(Messages.BookAdded);
     }
@@ -38,10 +46,11 @@ public class BookManager : IBookService
 
     public IDataResult<List<BookResponseDto>> GetAll()
     {
+
         var books = _bookDal.GetAll();
         var bookResponseDto = books.Select(book => new BookResponseDto(
-            book.BookId, book.BookName, book.Description,book.Price,book.AuthorId,book.CategoryId,book.PublisherId )).ToList();
-            
+            book.BookId, book.BookName, book.Description, book.Price, book.AuthorId, book.CategoryId, book.PublisherId)).ToList();
+
         return new SuccessDataResult<List<BookResponseDto>>(bookResponseDto,Messages.AllBooksListed); 
     }
 

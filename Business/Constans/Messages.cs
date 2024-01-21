@@ -23,4 +23,7 @@ public class Messages
     public static string AllPublisherListed = "Yayimcilar listelendi";
     internal static string? AuthorizationDenied;
     internal static string BookNameAlreadyExits;
+    internal static string CategoryNameAldreadyExits;
+    internal static string PublisherNameIsAlreadyExits;
+    internal static string AuthorNameAlreadyExits;
 }

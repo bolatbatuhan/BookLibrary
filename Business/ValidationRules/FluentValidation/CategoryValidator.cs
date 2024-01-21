@@ -9,5 +9,6 @@ public class CategoryValidator : AbstractValidator<Category>
     {
         RuleFor(c=>c.CategoryName).NotEmpty();
         RuleFor(c => c.CategoryName).MinimumLength(2);
+       
     }
 }

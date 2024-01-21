@@ -2,6 +2,7 @@
 using Business.Constans;
 using Business.ValidationRules.FluentValidation;
 using CorePackages.Aspects.Autofac.Validation;
+using CorePackages.Utilities.Business;
 using CorePackages.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -22,6 +23,11 @@ public class CategoryManager : ICategoryService
     [ValidationAspect(typeof(CategoryValidator))]
     public IResult Add(CategoryAddRequest categoryAddRequest)
     {
+        IResult result = BusinessRules.Run(CheckIfCategoryNameExits(categoryAddRequest.CategoryName));
+        if (result != null)
+        {
+            return result;
+        }
         _categoryDal.Add(categoryAddRequest);
         return new SuccessResult(Messages.CategoryAdded);
     }
@@ -48,5 +54,14 @@ public class CategoryManager : ICategoryService
     {
         _categoryDal.Update(categoryUpdateRequest);
         return new SuccessResult(Messages.CategoryUpdated);
+    }
+    private IResult CheckIfCategoryNameExits(string categoryName)
+    {
+        var result = _categoryDal.GetAll(c=>c.CategoryName == categoryName).Any();
+        if(result)
+        {
+            return new ErrorResult(Messages.CategoryNameAldreadyExits);
+        }
+        return new SuccessResult();
     }
 }
