@@ -1,5 +1,5 @@
 # BookLibrary
-- Bu proje, bir kitaplık kütüphanesi uygulamasını yönetmek ve kitaplarla ilgili kategori, yayıncı,yaazar gibi bilgileri takip etmek amacıyla geliştirilmiştir.
+- Bu proje, bir kitaplık kütüphanesi uygulamasını yönetmek ve kitaplarla ilgili kategori, yayıncı,yazar gibi bilgileri takip etmek amacıyla geliştirilmiştir.
 
 ## Kullanılan Teknolojiler
 
